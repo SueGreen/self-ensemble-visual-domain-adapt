@@ -122,6 +122,9 @@ def experiment(exp, arch, loss, double_softmax, confidence_thresh, rampup, teach
     from torch import nn
     from torch.nn import functional as F
     import optim_weight_ema
+    from torch.utils.tensorboard import SummaryWriter
+    
+    writer = SummaryWriter()
 
     torch_device = torch.device(device)
     pool = work_pool.WorkerThreadPool(2)
@@ -475,6 +478,7 @@ def experiment(exp, arch, loss, double_softmax, confidence_thresh, rampup, teach
 
     best_conf_mask_rate = 0.0
     best_src_test_err = 1.0
+    
     for epoch in range(num_epochs):
         t1 = time.time()
 
@@ -525,8 +529,10 @@ def experiment(exp, arch, loss, double_softmax, confidence_thresh, rampup, teach
 
 
         log('{}Epoch {} took {:.2f}s: TRAIN clf loss={:.6f}, {}; '
-            'SRC TEST ERR={:.3%}, TGT TEST student err={:.3%}, TGT TEST teacher err={:.3%}'.format(
-            improve, epoch, t2 - t1, train_clf_loss, unsup_loss_string, src_test_err_stu, tgt_test_err_stu, tgt_test_err_tea))
+            'SRC TEST ERR={:.3%}, TGT TEST student accuracy={:.3%}, TGT TEST teacher accuracy={:.3%}', .format(
+            improve, epoch, t2 - t1, train_clf_loss, unsup_loss_string, src_test_err_stu, 100-tgt_test_err_stu, 100-tgt_test_err_tea))
+        writer.add_scalar('Accuracy student/test', 100-tgt_test_err_stu, n_iter)
+        writer.add_scalar('Accuracy teacher/test', 100-tgt_test_err_tea, n_iter)
 
     # Save network
     if model_file != '':
