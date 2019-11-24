@@ -531,8 +531,8 @@ def experiment(exp, arch, loss, double_softmax, confidence_thresh, rampup, teach
         log('{}Epoch {} took {:.2f}s: TRAIN clf loss={:.6f}, {}; '
             'SRC TEST ERR={:.3%}, TGT TEST student accuracy={:.3%}, TGT TEST teacher accuracy={:.3%}'.format(
             improve, epoch, t2 - t1, train_clf_loss, unsup_loss_string, src_test_err_stu, 100-tgt_test_err_stu, 100-tgt_test_err_tea))
-        writer.add_scalar('Accuracy student/test', 100-tgt_test_err_stu, epoch)
-        writer.add_scalar('Accuracy teacher/test', 100-tgt_test_err_tea, epoch)
+        writer.add_scalar('Accuracy student/test', 100-tgt_test_err_stu/100, epoch)
+        writer.add_scalar('Accuracy teacher/test', 100-tgt_test_err_tea/100, epoch)
 
     # Save network
     if model_file != '':
