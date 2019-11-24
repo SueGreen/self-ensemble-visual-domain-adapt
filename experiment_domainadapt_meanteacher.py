@@ -7,8 +7,6 @@ https://arxiv.org/abs/1703.01780
 
 """
 import click
-%load_ext tensorboard
-%tensorboard --logdir runs
 
 
 @click.command()
